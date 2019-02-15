@@ -1,5 +1,5 @@
 # Use Dynamic Binary Packet for Jmeter 
-- jmeter를 사용한 가변길이 TCP Binary 패킷 처리를 설명합니다.
+> jmeter를 사용한 가변길이 TCP Binary 패킷 처리를 설명합니다.
 
 ## Test 시나리오
 - 테스트할 서버는 로컬에 1234 port를 listen하고 있습니다.
@@ -19,6 +19,9 @@ struct header_ {
 - thread(socket connection) 는 10개로 합니다.
 
 ## apache jmeter 소스 받기
+> jmeter의 sampler에서 tcp 가변길이 패킷을 처리할 수 있는 방법이 없으므로, plug-in을 만들어야 합니다
+> Java Request plug-in을 만들기 위해 jmeter 소스를 받습니다.
+
 #### 1. github 에서 fork
 > https://github.com/apache/jmeter
 #### 2. 내 PC에 checkout
@@ -37,14 +40,16 @@ ant setup-eclipse-project
 
 ## 코드 추가
 #### 1. org.apache.jmeter.protocol.java.test 아래 DynamicLengthTCP, SingletonSocketMap class 추가
-  - AbstractJavaSamplerClient 상속받아 구현했습니다.
-  - 자세한 내용은 JavaTest class 참고했습니다. (DynamicLengthTCP 만들때 JavaTest를 그대로 복사해서 만들었음)
-  - DynamicLengthTCP
-    - header 패킷을 전송하고 (seq, body length)
-    - body 패킷을 전송합니다.
-    - header 응답패킷을 먼저 받고, body 길이만큼 응답 패킷을 받습니다. 
-  - https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/DynamicLengthTCP.java
-  - https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/SingletonSocketMap.java
+  - [AbstractJavaSamplerClient](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/sampler/AbstractJavaSamplerClient.java) 상속받아 구현했습니다.
+  - 자세한 내용은 [JavaTest](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/JavaTest.java) class 참고했습니다. (JavaTest를 그대로 복사해서 생성)
+  - [DynamicLengthTCP] (https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/DynamicLengthTCP.java)
+    - Jmeter에서 생성한 Binary 패킷을 plug-in으로 가져오기 위해서는 hex string으로 변환해서 넘어옵니다. ([BinaryTCPClientImpl](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/tcp/org/apache/jmeter/protocol/tcp/sampler/BinaryTCPClientImpl.java) 참고) "RequestData" 저장된 요청 패킷을 byte[]로 변환합니다.([여기](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/DynamicLengthTCP.java#L181))
+    - 요청 패킷을 전송합니다.
+    - 응답 패킷을 header 먼저 받고, body 길이만큼 응답 패킷을 받습니다.
+    - 받은 Binary 패킷과 상태 정보를, jmeter에서 받을 수 있도록 SampleResult에 담습니다. 
+  - [SingletonSocketMap](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/SingletonSocketMap.java)
+    - Thread별 Socket 재사용을 위한 class 입니다.
+
 #### 2. git add 및 commit, push
 
 ## Export jar
