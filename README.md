@@ -40,9 +40,9 @@ ant setup-eclipse-project
 
 ## 코드 추가
 #### 1. org.apache.jmeter.protocol.java.test 아래 DynamicLengthTCP, SingletonSocketMap class 추가
-  - [AbstractJavaSamplerClient](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/sampler/AbstractJavaSamplerClient.java) 상속받아 구현했습니다.
-  - 자세한 내용은 [JavaTest](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/JavaTest.java) class 참고했습니다. (JavaTest를 그대로 복사해서 생성)
-  - [DynamicLengthTCP] (https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/DynamicLengthTCP.java)
+  - [DynamicLengthTCP](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/DynamicLengthTCP.java)
+    - [AbstractJavaSamplerClient](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/sampler/AbstractJavaSamplerClient.java) 상속받아 구현했습니다.
+    - 자세한 내용은 [JavaTest](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/JavaTest.java) class 참고했습니다. (JavaTest를 그대로 복사해서 생성)
     - Jmeter에서 생성한 Binary 패킷을 plug-in으로 가져오기 위해서는 hex string으로 변환해서 넘어옵니다. ([BinaryTCPClientImpl](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/tcp/org/apache/jmeter/protocol/tcp/sampler/BinaryTCPClientImpl.java) 참고) "RequestData" 저장된 요청 패킷을 byte[]로 변환합니다.([여기](https://github.com/lmk/jmeter/blob/DynamicLengthTCP/src/protocol/java/org/apache/jmeter/protocol/java/test/DynamicLengthTCP.java#L181))
     - 요청 패킷을 전송합니다.
     - 응답 패킷을 header 먼저 받고, body 길이만큼 응답 패킷을 받습니다.
@@ -54,9 +54,14 @@ ant setup-eclipse-project
 
 ## Export jar
 #### 1. Package Explorer 에서 추가한 파일 선택
+  - DynamicLengthTCP.java
+  - SingletonSocketMap.java
 #### 2. Export > JAR File
-#### 3. lib\ext 경로 아래 저장할 jar 파일명 입력
-
+#### 3. \lib\ext 경로 아래 저장할 jar 파일명 입력
+  - \lib\ext에 jar 파일을 넣어두면, jmeter 실행시 plugin으로 인식해서 읽어들입니다.
+  - github에서 받은 소스의 \lib\ext 경로가 아니라, jmeter 실행파일이 위치한 경로입니다.
+  - 제 경우는 소스는 "D:\src\jmeter"에 받았고, jmeter 실행파일은 "D:\Tools\apache-jmeter-5.0"에 받았으므로, jar 파일을 저장할 경로는 "D:\Tools\apache-jmeter-5.0\lib\ext" 였습니다.
+  
 ## Test
 #### 1. bin/jmeter.bat 실행
 #### 2. "Test Plan" 우클릭 > Add > Thread Group추가 
@@ -97,7 +102,7 @@ ant setup-eclipse-project
   - Size of response body length: body 사이즈가 저장된 크기를 입력합니다 (여기서는 2)
     - DynamicLengthTCP 에서는 사이즈가 1, 2, 4 일때만 처리 가능합니다.
 #### 7. "Java Request" 우클릭 > Add > Pre Processors > BeanShell PreProcessor
-  - 요청 패킷을 만들기 위 BeanShell을 작성합니다.
+  - 요청 패킷을 만들기 위해 BeanShell을 작성합니다.
   ```java
 import java.io.*;
 import org.apache.jmeter.protocol.tcp.sampler.*;
