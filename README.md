@@ -1,7 +1,7 @@
-# use dynamic binary tcp packet for jmeter 
+# Use Dynamic Binary Packet for Jmeter 
 - jmeter를 사용한 가변길이 TCP Binary 패킷 처리를 설명합니다.
 
-## test 시나리오
+## Test 시나리오
 - 테스트할 서버는 로컬에 1234 port를 listen하고 있습니다.
 - 요청 패킷에 요청 seq가 포함됩니다.
 - 요청/응답 header 패킷은 동일합니다.
