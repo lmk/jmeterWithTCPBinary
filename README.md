@@ -19,7 +19,7 @@ struct header_ {
 - thread(socket connection) 는 10개로 합니다.
 
 ## apache jmeter 소스 받기
-> jmeter의 sampler에서 tcp 가변길이 패킷을 처리할 수 있는 방법이 없으므로, plug-in을 만들어야 합니다
+> jmeter의 sampler에서 tcp 가변길이 패킷을 처리할 수 있는 방법이 없으므로, plug-in을 만들어야 합니다. 
 > Java Request plug-in을 만들기 위해 jmeter 소스를 받습니다.
 
 #### 1. github 에서 fork
