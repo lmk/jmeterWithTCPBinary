@@ -159,7 +159,7 @@ try {
 }
 
   ```
-#### 8. "Java Request" 우클릭 > Add > Pre Processors > BeanShell PreProcessor
+#### 8. "Java Request" 우클릭 > Add > Post Processors > BeanShell PostProcessor
   - 응답패킷 파싱을 위해 BeanShell을 작성합니다.
   ```java
 import java.nio.ByteBuffer;
